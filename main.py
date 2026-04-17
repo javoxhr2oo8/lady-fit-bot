@@ -80,7 +80,7 @@ async def payment_for_link(message: types.Message, bot: Bot):
         title="Obuna",
         description="To'lov qilish orqali bizning kanalimizga obuna bo'ling!",
         payload="sub_1",
-        provider_token="387026696:LIVE:68b6df538f3347fe865a1402",
+        provider_token="387026696:LIVE:69dfba416bb1c204e189738a",
         currency="UZS",
         prices=[LabeledPrice(label="Obuna", amount=500000)],
         provider_data=json.dumps({"receipt": receipt}),
