@@ -6,15 +6,25 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     conn.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            user_id INTEGER PRIMARY KEY
+            user_id INTEGER PRIMARY KEY,
+            first_name TEXT,
+            last_name TEXT,
+            username TEXT
         )
     """)
     conn.commit()
     conn.close()
 
-def add_user(user_id: int):
+def add_user(user_id: int, first_name: str = None, last_name: str = None, username: str = None):
     conn = sqlite3.connect(DB_PATH)
-    conn.execute("INSERT OR IGNORE INTO users (user_id) VALUES (?)", (user_id,))
+    conn.execute("""
+        INSERT INTO users (user_id, first_name, last_name, username)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(user_id) DO UPDATE SET
+            first_name = excluded.first_name,
+            last_name = excluded.last_name,
+            username = excluded.username
+    """, (user_id, first_name, last_name, username))
     conn.commit()
     conn.close()
 

@@ -1,7 +1,7 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 def main_menu_keyboards():
-    main_menu = ReplyKeyboardMarkup(
+    return ReplyKeyboardMarkup(
         keyboard=[
             [
                 KeyboardButton(text="📖 Biz Haqimizda"),
@@ -10,7 +10,6 @@ def main_menu_keyboards():
         ],
         resize_keyboard=True
     )
-    return main_menu
 
 def admin_keyboard():
     return ReplyKeyboardMarkup(
@@ -21,6 +20,7 @@ def admin_keyboard():
             ],
             [
                 KeyboardButton(text="📢 Rassylka"),
+                KeyboardButton(text="🎯 ID bo'yicha Rassylka"),
             ]
         ],
         resize_keyboard=True
