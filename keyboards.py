@@ -20,7 +20,6 @@ def admin_keyboard():
             ],
             [
                 KeyboardButton(text="📢 Rassylka"),
-                KeyboardButton(text="🎯 ID bo'yicha Rassylka"),
             ]
         ],
         resize_keyboard=True

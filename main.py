@@ -25,7 +25,6 @@ CHANNEL_ID = -1003898425915
 start_photo_id = None
 
 
-# ─── Состояния ───────────────────────────────────────────────
 class Broadcast(StatesGroup):
     waiting_text = State()
 
@@ -35,7 +34,6 @@ class BroadcastByID(StatesGroup):
     waiting_message = State()
 
 
-# ─── Вспомогательная функция аналитики ───────────────────────
 def user_label(user: types.User) -> str:
     full_name = user.full_name or "Nomsiz"
     username = f"@{user.username}" if user.username else "username yo'q"
@@ -53,7 +51,6 @@ async def send_analytics(text: str):
         print(f"[Analytics error]: {e}")
 
 
-# ─── /start ──────────────────────────────────────────────────
 @dp.message(CommandStart())
 async def start_command(message: types.Message):
     global start_photo_id
@@ -92,7 +89,6 @@ async def start_command(message: types.Message):
     )
 
 
-# ─── Biz Haqimizda ───────────────────────────────────────────
 @dp.message(F.text == "📖 Biz Haqimizda")
 async def about_us_command(message: types.Message):
     await message.answer(TEXTS["about_us"], parse_mode="HTML")
@@ -103,7 +99,6 @@ async def about_us_command(message: types.Message):
     )
 
 
-# ─── Obuna bo'lish ────────────────────────────────────────────
 @dp.message(F.text == "⭐️ Obuna bo'lish")
 async def payment_for_link(message: types.Message, bot: Bot):
     receipt = {
@@ -136,8 +131,6 @@ async def payment_for_link(message: types.Message, bot: Bot):
         f"{user_label(message.from_user)}"
     )
 
-
-# ─── Pre-checkout ─────────────────────────────────────────────
 @dp.pre_checkout_query()
 async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery, bot: Bot):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
@@ -148,7 +141,6 @@ async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery,
     )
 
 
-# ─── Успешная оплата ──────────────────────────────────────────
 @dp.message(F.successful_payment)
 async def success_payment_handler(message: types.Message, bot: Bot):
     invite_link = await bot.create_chat_invite_link(
@@ -169,7 +161,6 @@ async def success_payment_handler(message: types.Message, bot: Bot):
     )
 
 
-# ─── Рассылка всем ────────────────────────────────────────────
 @dp.message(F.text == "📢 Rassylka", F.from_user.id.in_(ADMIN_IDS))
 async def broadcast_start(message: types.Message, state: FSMContext):
     await message.answer("✍️ Rassylka uchun matn yoki 📸 rasm bilan matn yuboring:")
@@ -208,44 +199,6 @@ async def broadcast_send_text(message: types.Message, state: FSMContext):
             failed += 1
 
     await message.answer("✅ Rassylka barcha foydalanuvchilarga yuborildi!", reply_markup=admin_keyboard())
-
-
-# ─── Рассылка по ID ───────────────────────────────────────────
-@dp.message(F.text == "🎯 ID bo'yicha Rassylka", F.from_user.id.in_(ADMIN_IDS))
-async def broadcast_by_id_start(message: types.Message, state: FSMContext):
-    await message.answer(
-        "📋 Foydalanuvchi ID larini kiriting (vergul bilan ajrating):\n\n"
-        "<i>Misol: 123456789, 987654321, 111222333</i>",
-        parse_mode="HTML"
-    )
-    await state.set_state(BroadcastByID.waiting_ids)
-
-
-@dp.message(BroadcastByID.waiting_ids, F.from_user.id.in_(ADMIN_IDS))
-async def broadcast_by_id_get_ids(message: types.Message, state: FSMContext):
-    raw = message.text.replace(" ", "")
-    parts = raw.split(",")
-    valid_ids = []
-    invalid = []
-
-    for part in parts:
-        try:
-            valid_ids.append(int(part))
-        except ValueError:
-            invalid.append(part)
-
-    if not valid_ids:
-        await message.answer("❌ Hech qanday to'g'ri ID topilmadi. Qaytadan kiriting:")
-        return
-
-    await state.update_data(target_ids=valid_ids)
-
-    info = f"✅ {len(valid_ids)} ta ID qabul qilindi."
-    if invalid:
-        info += f"\n⚠️ Noto'g'ri: {', '.join(invalid)}"
-
-    await message.answer(f"{info}\n\n✍️ Endi xabarni yuboring (matn yoki 📸 rasm):")
-    await state.set_state(BroadcastByID.waiting_message)
 
 
 @dp.message(BroadcastByID.waiting_message, F.from_user.id.in_(ADMIN_IDS), F.photo)
@@ -292,7 +245,6 @@ async def broadcast_by_id_send_text(message: types.Message, state: FSMContext):
     )
 
 
-# ─── Запуск ───────────────────────────────────────────────────
 async def main():
     init_db()
     print("bot is version 0.2.1")
