@@ -24,7 +24,6 @@ CHANNEL_ID = -1003898425915
 
 start_photo_id = None
 
-
 class Broadcast(StatesGroup):
     waiting_text = State()
 
@@ -121,7 +120,7 @@ async def payment_for_link(message: types.Message, bot: Bot):
         payload="sub_1",
         provider_token="387026696:LIVE:68b6df538f3347fe865a1402",
         currency="UZS",
-        prices=[LabeledPrice(label="Obuna", amount=500000)],
+        prices=[LabeledPrice(label="Obuna", amount=12000000)],
         provider_data=json.dumps({"receipt": receipt}),
         start_parameter="sub-pay"
     )
