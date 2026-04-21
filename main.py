@@ -80,7 +80,7 @@ async def payment_for_link(message: types.Message, bot: Bot):
         title="Obuna",
         description="To'lov qilish orqali bizning kanalimizga obuna bo'ling!",
         payload="sub_1",
-        provider_token="387026696:LIVE:69dfba416bb1c204e189738a",
+        provider_token="387026696:LIVE:68b6df538f3347fe865a1402",
         currency="UZS",
         prices=[LabeledPrice(label="Obuna", amount=500000)],
         provider_data=json.dumps({"receipt": receipt}),
@@ -93,7 +93,6 @@ async def process_pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery,
 
 @dp.message(F.successful_payment)
 async def success_payment_handler(message: types.Message, bot: Bot):
-    # Генерируем ссылку (member_limit=1 делает её одноразовой)
     invite_link = await bot.create_chat_invite_link(
         chat_id=CHANNEL_ID,
         member_limit=1
